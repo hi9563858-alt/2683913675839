@@ -1,30 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>DOOM Launcher</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<title>DOOM Loader</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div id="boot">
-  INITIALIZING SYSTEM...<br>
-  LOADING GRAPHICS...<br>
-  PREPARING GAME ENGINE...<br>
-  READY
+  <div id="title">DOOM SYSTEM BOOT</div>
+
+  <div id="bar-container">
+    <div id="bar"></div>
+  </div>
+
+  <div id="status">Initializing...</div>
 </div>
 
 <div id="menu" class="hidden">
-  <h1>DOOM LAUNCHER</h1>
-
-  <button onclick="startGame()">▶ START DOOM</button>
+  <h1>DOOM READY</h1>
+  <button onclick="startGame()">▶ START</button>
   <button onclick="fullscreen()">⛶ FULLSCREEN</button>
 </div>
 
 <canvas id="game"></canvas>
 
 <script src="main.js"></script>
-
 </body>
 </html>
