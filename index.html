@@ -1,31 +1,84 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>DOOM Loader</title>
-<link rel="stylesheet" href="style.css">
-</head>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
-<body>
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET    -1
 
-<div id="boot">
-  <div id="title">DOOM SYSTEM BOOT</div>
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-  <div id="bar-container">
-    <div id="bar"></div>
-  </div>
+int slideIndex = 0;
+const int totalSlides = 4; // Reset to 4 slides (removed deep sleep)
+unsigned long lastSlideChange = 0;
+const unsigned long slideInterval = 10000; // 10 seconds
 
-  <div id="status">Initializing...</div>
-</div>
+void setup() {
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { 
+    for(;;); 
+  }
+  
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+  lastSlideChange = millis();
+}
 
-<div id="menu" class="hidden">
-  <h1>DOOM READY</h1>
-  <button onclick="startGame()">▶ START</button>
-  <button onclick="fullscreen()">⛶ FULLSCREEN</button>
-</div>
+void loop() {
+  unsigned long currentMillis = millis();
 
-<canvas id="game"></canvas>
+  if (currentMillis - lastSlideChange >= slideInterval) {
+    slideIndex = (slideIndex + 1) % totalSlides;
+    lastSlideChange = currentMillis;
+  }
 
-<script src="main.js"></script>
-</body>
-</html>
+  display.clearDisplay();
+  
+  switch (slideIndex) {
+    case 0: // Slide 1: Main Clock Face
+      display.setTextSize(3);
+      display.setCursor(20, 10);
+      display.print("10:56");
+      display.setTextSize(1);
+      display.setCursor(26, 45);
+      display.print("AUTO v0.9 DEMO");
+      break;
+
+    case 1: // Slide 2: Calendar Applet
+      display.setTextSize(2);
+      display.setCursor(15, 10);
+      display.print("CALENDAR");
+      display.setTextSize(1);
+      display.setCursor(20, 38);
+      display.print("Friday, Oct 16");
+      display.setCursor(20, 50);
+      display.print("Year: 2026");
+      break;
+
+    case 2: // Slide 3: Multimedia Player GUI
+      display.setTextSize(2);
+      display.setCursor(10, 5);
+      display.print("MUSIC APP");
+      display.setTextSize(1);
+      display.setCursor(5, 32);
+      display.print(" Play  Next");
+      display.setCursor(5, 47);
+      display.print(" Back  [Hold] Sleep");
+      break;
+
+    case 3: // Slide 4: Charging Interface Simulation
+      { 
+        display.setTextSize(2);
+        display.setCursor(15, 10);
+        display.print("CHARGING");
+        display.drawRect(20, 35, 60, 20, SSD1306_WHITE);
+        display.fillRect(80, 40, 5, 10, SSD1306_WHITE);
+        
+        int barWidth = (millis() / 100) % 56;
+        display.fillRect(22, 37, barWidth, 16, SSD1306_WHITE);
+        break;
+      } 
+  }
+
+  display.display();
+  delay(50); 
+}
